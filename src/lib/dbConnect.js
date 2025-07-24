@@ -16,6 +16,10 @@ const client = new MongoClient(uri, {
 	},
 });
 
+export const collections = {
+	servicesCollection: "services",
+};
+
 const dbConnect = async (collectionName) => {
 	try {
 		if (!cachedClient) {

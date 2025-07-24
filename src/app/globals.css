@@ -1,2 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+.bg-gradient-black-to-transparent {
+  background: linear-gradient(90deg, #000000 0%, rgba(66, 73, 255, 0) 100%);
+}

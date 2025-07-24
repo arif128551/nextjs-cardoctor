@@ -20,10 +20,16 @@ const NavBar = () => {
 			<li>
 				<Link href={"#"}>Contact</Link>
 			</li>
+			<li>
+				<Link href={"#"}>Login</Link>
+			</li>
+			<li>
+				<Link href={"/register"}>Register</Link>
+			</li>
 		</>
 	);
 	return (
-		<div className="navbar bg-base-100 shadow-sm">
+		<div className="navbar max-w-7xl mx-auto py-8 px-4">
 			<div className="navbar-start">
 				<div className="dropdown">
 					<div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -46,10 +52,10 @@ const NavBar = () => {
 				</Link>
 			</div>
 			<div className="navbar-center hidden lg:flex">
-				<ul className="menu menu-horizontal px-1">{navLists}</ul>
+				<ul className="menu menu-horizontal px-1 gap-6">{navLists}</ul>
 			</div>
 			<div className="navbar-end">
-				<Link href={"/"} className="btn btn-outline">
+				<Link href={"/"} className="btn btn-outline border-red-400 text-red-400 rounded-md">
 					Appointment
 				</Link>
 			</div>

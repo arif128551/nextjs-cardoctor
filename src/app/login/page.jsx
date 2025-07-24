@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { FaFacebookF, FaLinkedinIn } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
@@ -10,22 +9,8 @@ const page = () => {
 				<Image src={"/assets/images/login/login.svg"} alt={"login image"} width={460} height={502} />
 			</figure>
 			<div className="p-18 border border-gray-300 rounded-lg w-[611px]">
-				<h1 className="text-center text-4xl font-semibold mb-10">Sign Up</h1>
+				<h1 className="text-center text-4xl font-semibold mb-10">Login</h1>
 				<form action="">
-					<div className="mb-6">
-						<label htmlFor="email" className="block mb-2 text-sm">
-							Name
-						</label>
-						<input
-							type="text"
-							name="name"
-							id="name"
-							required
-							placeholder="Enter Your Name"
-							className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
-							data-temp-mail-org="0"
-						/>
-					</div>
 					<div className="mb-6">
 						<label htmlFor="email" className="block mb-2 text-sm">
 							Email address
@@ -58,11 +43,11 @@ const page = () => {
 					</div>
 
 					<button className="btn bg-red-500 w-full border-red-500 hover:bg-red-600 rounded-lg text-white shadow">
-						Register
+						Login
 					</button>
 				</form>
 				<div className="mt-7 mb-12 text-center">
-					<p className="mb-4">Or Sign Up with</p>
+					<p className="mb-4">Or Sign In with</p>
 					<div className="space-x-3">
 						<button className="btn btn-circle shadow-transparent">
 							<FaFacebookF />
@@ -76,9 +61,7 @@ const page = () => {
 					</div>
 				</div>
 				<div className="text-center">
-					<p>
-						Already have an account? <Link href={"/login"}>Login</Link>
-					</p>
+					<a className="link link-hover">Forgot password?</a>
 				</div>
 			</div>
 		</div>

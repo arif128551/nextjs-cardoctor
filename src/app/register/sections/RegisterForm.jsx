@@ -1,13 +1,54 @@
 "use client";
+import axios from "axios";
+import { useState } from "react";
 
 const RegisterForm = () => {
-	const handleRegister = (e) => {
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+	const [success, setSuccess] = useState(null);
+
+	const handleRegister = async (e) => {
 		e.preventDefault();
+		setError(null);
+		setSuccess(null);
+
+		const form = e.target;
+		const name = form.name.value;
+		const email = form.email.value;
+		const password = form.password.value;
+
+		if (!name || !email || !password) {
+			setError("All fields are required.");
+			return;
+		}
+
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+		if (!emailRegex.test(email)) {
+			setError("Please enter a valid email address.");
+			return;
+		}
+
+		if (password.length < 6) {
+			setError("Password must be at least 6 characters long.");
+			return;
+		}
+
+		setLoading(true);
+		try {
+			const res = await axios.post("/api/register", { name, email, password });
+			setSuccess("Registration successful!");
+			form.reset();
+		} catch (err) {
+			setError(err?.response?.data?.error || "Something went wrong");
+		} finally {
+			setLoading(false);
+		}
 	};
 	return (
 		<form onSubmit={handleRegister}>
+			{/* Name */}
 			<div className="mb-6">
-				<label htmlFor="email" className="block mb-2 text-sm">
+				<label htmlFor="name" className="block mb-2 text-sm">
 					Name
 				</label>
 				<input
@@ -15,11 +56,11 @@ const RegisterForm = () => {
 					name="name"
 					id="name"
 					required
-					placeholder="Enter Your Name"
 					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
-					data-temp-mail-org="0"
 				/>
 			</div>
+
+			{/* Email */}
 			<div className="mb-6">
 				<label htmlFor="email" className="block mb-2 text-sm">
 					Email address
@@ -29,31 +70,31 @@ const RegisterForm = () => {
 					name="email"
 					id="email"
 					required
-					placeholder="Enter Your Email Here"
-					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
-					data-temp-mail-org="0"
-				/>
-			</div>
-			<div className="mb-6">
-				<div className="flex justify-between">
-					<label htmlFor="password" className="text-sm mb-2">
-						Password
-					</label>
-				</div>
-				<input
-					type="password"
-					name="password"
-					autoComplete="current-password"
-					id="password"
-					required
-					placeholder="*******"
 					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
 				/>
 			</div>
 
-			<button className="btn bg-red-500 w-full border-red-500 hover:bg-red-600 rounded-lg text-white shadow">
-				Register
+			{/* Password */}
+			<div className="mb-6">
+				<label htmlFor="password" className="block mb-2 text-sm">
+					Password
+				</label>
+				<input
+					type="password"
+					name="password"
+					id="password"
+					required
+					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
+				/>
+			</div>
+
+			<button type="submit" disabled={loading} className="btn bg-red-500 text-white w-full rounded-md hover:bg-red-600">
+				{loading ? "Registering..." : "Register"}
 			</button>
+
+			{/* Feedback */}
+			{error && <p className="text-red-500 mt-3">{error}</p>}
+			{success && <p className="text-green-600 mt-3">{success}</p>}
 		</form>
 	);
 };

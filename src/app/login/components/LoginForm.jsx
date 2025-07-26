@@ -9,7 +9,7 @@ const LoginForm = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
-	const [status, setStatus] = useState("idle"); // idle | loading | success | error
+	const [status, setStatus] = useState("idle");
 
 	const router = useRouter();
 

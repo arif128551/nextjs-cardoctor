@@ -4,7 +4,6 @@ import NavBar from "@/components/NavBar";
 import Providers from "./providers";
 import { Toaster } from "react-hot-toast";
 import SessionProviderWrapper from "@/components/SessionProviderWrapper";
-import SessionChecker from "@/components/auth/SessionChecker";
 
 const roboto = Inter({
 	subsets: ["latin"],
@@ -21,7 +20,6 @@ export default function RootLayout({ children }) {
 			<body className={`${roboto.className} antialiased`}>
 				<Providers>
 					<SessionProviderWrapper>
-						<SessionChecker />
 						<NavBar />
 						<Toaster position="top-right" />
 						{children}

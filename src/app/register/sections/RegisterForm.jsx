@@ -46,7 +46,6 @@ const RegisterForm = () => {
 	};
 	return (
 		<form onSubmit={handleRegister}>
-			{/* Name */}
 			<div className="mb-6">
 				<label htmlFor="name" className="block mb-2 text-sm">
 					Name
@@ -60,7 +59,6 @@ const RegisterForm = () => {
 				/>
 			</div>
 
-			{/* Email */}
 			<div className="mb-6">
 				<label htmlFor="email" className="block mb-2 text-sm">
 					Email address
@@ -74,7 +72,6 @@ const RegisterForm = () => {
 				/>
 			</div>
 
-			{/* Password */}
 			<div className="mb-6">
 				<label htmlFor="password" className="block mb-2 text-sm">
 					Password
@@ -92,7 +89,6 @@ const RegisterForm = () => {
 				{loading ? "Registering..." : "Register"}
 			</button>
 
-			{/* Feedback */}
 			{error && <p className="text-red-500 mt-3">{error}</p>}
 			{success && <p className="text-green-600 mt-3">{success}</p>}
 		</form>

@@ -42,3 +42,21 @@ export const loginUser = async ({ email, password }) => {
 		user,
 	};
 };
+
+export const saveSocialUser = async ({ name, email, image }) => {
+	const usersCollection = await dbConnect(collections.usersCollection);
+
+	const existing = await usersCollection.findOne({ email });
+	if (!existing) {
+		const newUser = {
+			name,
+			email,
+			image,
+			createdAt: new Date().toISOString(),
+		};
+		const result = await usersCollection.insertOne(newUser);
+		return result.insertedId;
+	} else {
+		return existing._id;
+	}
+};

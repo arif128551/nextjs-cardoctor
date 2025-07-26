@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { FaFacebookF, FaLinkedinIn } from "react-icons/fa6";
-import { FcGoogle } from "react-icons/fc";
 import RegisterForm from "./sections/RegisterForm";
+import SocialLogin from "@/components/auth/SocialLogin";
 const page = () => {
 	return (
 		<div className="flex gap-16 max-w-7xl px-4 mx-auto items-center">
@@ -15,17 +14,7 @@ const page = () => {
 				<RegisterForm></RegisterForm>
 				<div className="mt-7 mb-12 text-center">
 					<p className="mb-4">Or Sign Up with</p>
-					<div className="space-x-3">
-						<button className="btn btn-circle shadow-transparent">
-							<FaFacebookF />
-						</button>
-						<button className="btn btn-circle shadow-transparent">
-							<FaLinkedinIn />
-						</button>
-						<button className="btn btn-circle shadow-transparent">
-							<FcGoogle />
-						</button>
-					</div>
+					<SocialLogin />
 				</div>
 				<div className="text-center">
 					<p>

@@ -1,81 +1,95 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
-	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState(null);
-	const [success, setSuccess] = useState(null);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [error, setError] = useState("");
+	const [status, setStatus] = useState("idle"); // idle | loading | success | error
+
+	const router = useRouter();
 
 	const handleLogin = async (e) => {
 		e.preventDefault();
-		setError(null);
-		setSuccess(null);
-		setLoading(true);
+		setError("");
+		setStatus("loading");
 
-		const form = e.target;
-		const email = form.email.value.trim();
-		const password = form.password.value;
+		const res = await signIn("credentials", {
+			redirect: false,
+			email,
+			password,
+		});
 
-		// ✅ Client-side validation
-		if (!email || !password) {
-			setError("Email and password are required.");
-			setLoading(false);
-			return;
-		}
+		if (res?.error) {
+			setError(res.error);
+			setStatus("error");
 
-		try {
-			const res = await axios.post("/api/login", { email, password });
-			setSuccess("Login successful!");
-			console.log("Logged in user:", res.data.user);
-			form.reset();
-			// ⏩ Redirect or set session token if needed
-		} catch (err) {
-			setError(err?.response?.data?.error || "Login failed");
-		} finally {
-			setLoading(false);
+			// Optional: reset status after 3 seconds
+			setTimeout(() => setStatus("idle"), 3000);
+		} else {
+			setStatus("success");
+			toast.success("Logged in successful!");
+			// Optional: delay before redirect
+			setTimeout(() => {
+				// router.push("/dashboard");
+				router.push("/");
+			}, 1000);
 		}
 	};
 
+	// ✅ Determine button label
+	let buttonLabel = "Login";
+	if (status === "loading") buttonLabel = "Logging in...";
+	else if (status === "success") buttonLabel = "Redirecting...";
+	else if (status === "error") buttonLabel = "Try again";
+
 	return (
-		<form onSubmit={handleLogin}>
+		<form onSubmit={handleLogin} className="max-w-md mx-auto p-4 bg-white rounded space-y-4">
 			{/* Email */}
-			<div className="mb-6">
-				<label htmlFor="email" className="block mb-2 text-sm">
-					Email address
+			<div>
+				<label htmlFor="email" className="block mb-1 text-sm font-medium">
+					Email
 				</label>
 				<input
-					type="email"
-					name="email"
 					id="email"
+					type="email"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
 					required
-					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
+					className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
 				/>
 			</div>
 
 			{/* Password */}
-			<div className="mb-6">
-				<label htmlFor="password" className="block mb-2 text-sm">
+			<div>
+				<label htmlFor="password" className="block mb-1 text-sm font-medium">
 					Password
 				</label>
 				<input
-					type="password"
-					name="password"
 					id="password"
+					type="password"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
 					required
-					className="w-full px-3 py-2 border rounded-md border-gray-300 text-gray-900"
+					className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
 				/>
 			</div>
 
-			{/* Submit */}
-			<button type="submit" disabled={loading} className="btn bg-blue-500 text-white w-full hover:bg-blue-600">
-				{loading ? "Logging in..." : "Login"}
+			{/* Submit Button */}
+			<button
+				type="submit"
+				disabled={status === "loading" || status === "success"}
+				className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+			>
+				{buttonLabel}
 			</button>
 
-			{/* Feedback */}
-			{error && <p className="text-red-500 mt-3">{error}</p>}
-			{success && <p className="text-green-600 mt-3">{success}</p>}
+			{/* Error message */}
+			{error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
 		</form>
 	);
 };

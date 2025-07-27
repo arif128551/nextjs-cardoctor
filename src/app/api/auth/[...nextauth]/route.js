@@ -5,7 +5,8 @@ import GitHubProvider from "next-auth/providers/github";
 import dbConnect, { collections } from "@/lib/dbConnect";
 import bcrypt from "bcryptjs";
 
-const handler = NextAuth({
+// ✅ Export authOptions separately for use in getServerSession
+export const authOptions = {
 	providers: [
 		CredentialsProvider({
 			name: "credentials",
@@ -60,10 +61,9 @@ const handler = NextAuth({
 						image: user.image,
 						createdAt: new Date().toISOString(),
 					});
-
-					user.customMessage = "user_created"; // ✅ new account
+					user.customMessage = "user_created";
 				} else {
-					user.customMessage = "social_login"; // ✅ already exists
+					user.customMessage = "social_login";
 				}
 			}
 			return true;
@@ -83,6 +83,8 @@ const handler = NextAuth({
 			return session;
 		},
 	},
-});
+};
 
+// ✅ use authOptions in NextAuth
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

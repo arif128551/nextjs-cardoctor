@@ -6,45 +6,38 @@ import React from "react";
 
 const NavBar = () => {
 	const { data: session, status } = useSession();
+
 	const handleLogout = () => {
-		sessionStorage.clear(); // ✅ Reset all shown toasts
+		sessionStorage.clear();
 		signOut();
 	};
+
 	const navLists = (
 		<>
 			<li>
 				<Link href="/">Home</Link>
 			</li>
-			<li>
-				<Link href={"#"}>About</Link>
-			</li>
-			<li>
-				<Link href={"#"}>Services</Link>
-			</li>
-			<li>
-				<Link href={"#"}>Blog</Link>
-			</li>
-			<li>
-				<Link href={"#"}>Contact</Link>
-			</li>
 			{status === "authenticated" ? (
 				<>
 					<li>
-						<button onClick={handleLogout}>Logout</button>
+						<button className="cursor-pointer" onClick={handleLogout}>
+							Logout
+						</button>
 					</li>
 				</>
 			) : (
 				<>
 					<li>
-						<Link href={"/login"}>Login</Link>
+						<Link href="/login">Login</Link>
 					</li>
 					<li>
-						<Link href={"/register"}>Register</Link>
+						<Link href="/register">Register</Link>
 					</li>
 				</>
 			)}
 		</>
 	);
+
 	return (
 		<div className="navbar max-w-7xl mx-auto py-8 px-4">
 			<div className="navbar-start">
@@ -64,17 +57,22 @@ const NavBar = () => {
 						{navLists}
 					</ul>
 				</div>
-				<Link href={"/"} className="">
-					<Image src={"/assets/logo.svg"} alt="Car doctor official logo" width={107} height={87} />
+				<Link href="/">
+					<Image src="/assets/logo.svg" alt="Car doctor official logo" width={107} height={87} />
 				</Link>
 			</div>
+
 			<div className="navbar-center hidden lg:flex">
 				<ul className="menu menu-horizontal px-1 gap-6">{navLists}</ul>
 			</div>
+
+			{/* ✅ Show Appointments button only if authenticated */}
 			<div className="navbar-end">
-				<Link href={"/"} className="btn btn-outline border-red-400 text-red-400 rounded-md">
-					Appointment
-				</Link>
+				{status === "authenticated" && (
+					<Link href="/my-bookings" className="btn btn-outline border-red-400 text-red-400 rounded-md">
+						My Bookings
+					</Link>
+				)}
 			</div>
 		</div>
 	);

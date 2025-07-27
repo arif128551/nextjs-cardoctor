@@ -6,7 +6,10 @@ import React from "react";
 
 const NavBar = () => {
 	const { data: session, status } = useSession();
-	console.log(status);
+	const handleLogout = () => {
+		sessionStorage.clear(); // ✅ Reset all shown toasts
+		signOut();
+	};
 	const navLists = (
 		<>
 			<li>
@@ -27,7 +30,7 @@ const NavBar = () => {
 			{status === "authenticated" ? (
 				<>
 					<li>
-						<button onClick={() => signOut()}>Logout</button>
+						<button onClick={handleLogout}>Logout</button>
 					</li>
 				</>
 			) : (

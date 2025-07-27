@@ -1,11 +1,9 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import dbConnect from "@/lib/dbConnect";
-import bcrypt from "bcryptjs";
-import { collections } from "@/lib/dbConnect";
-
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
+import dbConnect, { collections } from "@/lib/dbConnect";
+import bcrypt from "bcryptjs";
 
 const handler = NextAuth({
 	providers: [
@@ -24,9 +22,8 @@ const handler = NextAuth({
 				const isValid = await bcrypt.compare(credentials.password, user.password);
 				if (!isValid) throw new Error("Invalid password");
 
-				// Remove password before returning
 				const { password, ...userWithoutPass } = user;
-
+				userWithoutPass.customMessage = "login_success"; // ✅ pass message
 				return userWithoutPass;
 			},
 		}),
@@ -34,19 +31,58 @@ const handler = NextAuth({
 			clientId: process.env.GOOGLE_CLIENT_ID,
 			clientSecret: process.env.GOOGLE_CLIENT_SECRET,
 		}),
-
 		GitHubProvider({
 			clientId: process.env.GITHUB_ID,
 			clientSecret: process.env.GITHUB_SECRET,
 		}),
 	],
+
 	session: {
 		strategy: "jwt",
 	},
+
 	pages: {
-		signIn: "/login", // custom login page
+		signIn: "/login",
 	},
+
 	secret: process.env.NEXTAUTH_SECRET,
+
+	callbacks: {
+		async signIn({ user, account }) {
+			if (account.provider === "google" || account.provider === "github") {
+				const usersCollection = await dbConnect(collections.usersCollection);
+				const existingUser = await usersCollection.findOne({ email: user.email });
+
+				if (!existingUser) {
+					await usersCollection.insertOne({
+						name: user.name,
+						email: user.email,
+						image: user.image,
+						createdAt: new Date().toISOString(),
+					});
+
+					user.customMessage = "user_created"; // ✅ new account
+				} else {
+					user.customMessage = "social_login"; // ✅ already exists
+				}
+			}
+			return true;
+		},
+
+		async jwt({ token, user }) {
+			if (user?.customMessage) {
+				token.customMessage = user.customMessage;
+			}
+			return token;
+		},
+
+		async session({ session, token }) {
+			if (token?.customMessage) {
+				session.customMessage = token.customMessage;
+			}
+			return session;
+		},
+	},
 });
 
 export { handler as GET, handler as POST };

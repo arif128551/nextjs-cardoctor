@@ -32,7 +32,6 @@ const LoginForm = () => {
 			setTimeout(() => setStatus("idle"), 3000);
 		} else {
 			setStatus("success");
-			toast.success("Logged in successful!");
 			// Optional: delay before redirect
 			setTimeout(() => {
 				// router.push("/dashboard");

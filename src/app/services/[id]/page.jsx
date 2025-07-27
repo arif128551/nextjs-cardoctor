@@ -1,13 +1,15 @@
 import dbConnect, { collections } from "@/lib/dbConnect";
+import axios from "axios";
 import { ObjectId } from "mongodb";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
-const page = async (props) => {
-	const params = await props.params;
-	const id = params.id;
-	const servicesCollection = await dbConnect(collections.servicesCollection);
-	const serviceDetails = await servicesCollection.findOne({ _id: new ObjectId(id) });
+const page = async ({ params }) => {
+	const { id } = await params;
+	const res = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/services/${id}`);
+	const serviceDetails = res.data;
+
 	return (
 		<div className="max-w-7xl mx-auto px-4">
 			<div className="relative">
@@ -42,9 +44,12 @@ const page = async (props) => {
 				</div>
 				<div className="col-span-3">
 					<p className="text-3xl font-black mb-2">Price: {serviceDetails.price}</p>
-					<button className="bg-red-500 px-6 py-2 text-white rounded-lg cursor-pointer font-bold">
+					<Link
+						href={`/checkout/${serviceDetails._id}`}
+						className="bg-red-500 px-6 py-2 text-white rounded-lg cursor-pointer font-bold"
+					>
 						Proceed to checkout
-					</button>
+					</Link>
 				</div>
 			</div>
 		</div>

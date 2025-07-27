@@ -19,6 +19,7 @@ const client = new MongoClient(uri, {
 export const collections = {
 	servicesCollection: "services",
 	usersCollection: "users",
+	bookingCollection: "bookings",
 };
 
 const dbConnect = async (collectionName) => {
